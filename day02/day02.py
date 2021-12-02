@@ -47,19 +47,15 @@ def main():
         filename = sys.argv[1]
 
     with open(filename) as f:
-        commands = [(c, int(u)) for c, u in [line.split() for line in f.readlines()]]
+        commands = [(command, int(units)) for command, units in [line.split() for line in f.readlines()]]
 
     submarine = Submarine()
     submarine.navigate(commands)
-
-    result1 = submarine.hpos * submarine.depth
-    print(f"Part 1: position is {result1}")
+    print(f"Part 1: position is {submarine.hpos * submarine.depth}")
 
     submarine2 = Submarine2()
     submarine2.navigate(commands)
-
-    result2 = submarine2.hpos * submarine2.depth
-    print(f"Part 2: position is {result2}")
+    print(f"Part 2: position is {submarine2.hpos * submarine2.depth}")
 
 
 if __name__ == '__main__':
