@@ -3,9 +3,9 @@ from itertools import compress
 from math import log
 
 
-def get_bits_at(bit_pos, int_list):
+def get_bits_at(bit_pos, integers):
     mask = 1 << bit_pos
-    bits = (bool(i & mask) for i in int_list)
+    bits = (bool(i & mask) for i in integers)
     return bits
 
 
@@ -25,19 +25,18 @@ def compute_power_consumption(reports):
 
 def find_report(reports, selector_criteria):
     bit_width = int(log(max(reports), 2) + 1)
-    rating_reports = reports
-    rating_report = 0
+    report = 0
 
     for bit_pos in reversed(range(bit_width)):
         # reversed is necessary here because each loop prunes the reports, and we have to start at left bit
-        bits = get_bits_at(bit_pos, rating_reports)
+        bits = get_bits_at(bit_pos, reports)
         selector = selector_criteria(bits)
-        rating_reports = list(compress(rating_reports, selector))
-        if len(rating_reports) == 1:
-            rating_report = rating_reports[0]
+        reports = list(compress(reports, selector))
+        if len(reports) == 1:
+            report = reports[0]
             break
 
-    return rating_report
+    return report
 
 
 def least_frequent_bit_selector(bits):
