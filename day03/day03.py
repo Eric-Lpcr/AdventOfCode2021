@@ -3,13 +3,19 @@ from itertools import compress
 from math import log
 
 
+def get_bits_at(bit_pos, int_list):
+    mask = 1 << bit_pos
+    bits = (bool(i & mask) for i in int_list)
+    return bits
+
+
 def compute_power_consumption(reports):
     bit_width = int(log(max(reports), 2) + 1)
     half_length = len(reports) / 2
     gamma_rate = 0
     for bit_pos in range(bit_width):
-        ones = (report >> bit_pos & 1 for report in reports)
-        if sum(ones) > half_length:  # more ones than zeroes
+        bits = get_bits_at(bit_pos, reports)
+        if sum(bits) > half_length:  # more ones than zeroes
             gamma_rate |= 1 << bit_pos
 
     epsilon_rate = gamma_rate ^ (pow(2, bit_width) - 1)  # flip all bits (xor with ones)
@@ -24,7 +30,7 @@ def find_report(reports, selector_criteria):
 
     for bit_pos in reversed(range(bit_width)):
         # reversed is necessary here because each loop prunes the reports, and we have to start at left bit
-        bits = [report >> bit_pos & 1 for report in rating_reports]
+        bits = get_bits_at(bit_pos, rating_reports)
         selector = selector_criteria(bits)
         rating_reports = list(compress(rating_reports, selector))
         if len(rating_reports) == 1:
@@ -35,6 +41,7 @@ def find_report(reports, selector_criteria):
 
 
 def least_frequent_bit_selector(bits):
+    bits = list(bits)
     if sum(bits) < len(bits) / 2:  # sum(bits) is number of ones
         return bits  # select ones
     else:
@@ -42,6 +49,7 @@ def least_frequent_bit_selector(bits):
 
 
 def most_frequent_bit_selector(bits):
+    bits = list(bits)
     if sum(bits) >= len(bits) / 2:  # sum(bits) is number of ones
         return bits  # select ones
     else:
