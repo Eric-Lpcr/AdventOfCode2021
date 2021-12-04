@@ -3,6 +3,9 @@ from operator import not_
 from itertools import compress
 
 
+LOST = -1  # beware that 0 can be a winning score if winning draw is 0 ball!
+
+
 class Board:
     def __init__(self, text):
         self.n_cols = len(text.splitlines())
@@ -22,10 +25,10 @@ class Board:
             if self.check_line(line) or self.check_column(col):
                 return self.score(number)
             else:
-                return -1
+                return LOST
 
         except ValueError:
-            return -1
+            return LOST
 
     def check_line(self, line):
         i = line * self.n_cols
@@ -56,20 +59,20 @@ def play_to_win(draws, boards):
     for draw in draws:
         for board in boards:
             score = board.match(draw)
-            if score > 0:
+            if score != LOST:
                 return score
-    return -1
+    return LOST
 
 
 def play_to_loose(draws, boards):
     for draw in draws:
         for board in list(boards):  # need a copy of boards because we may remove some
             score = board.match(draw)
-            if score > 0:
+            if score != LOST:
                 boards.remove(board)
             if len(boards) == 0:
                 return board.score(draw)
-    return -1
+    return LOST
 
 
 def main():
