@@ -11,3 +11,5 @@ I also got stuck a bit with removing board during iteration on the list of board
 **I MUST REMEMBER** to always iterate over a copy when removing!
 
 Finally, I added the `BoardSet` class to encapsulate the playing methods and a global set clearing.
+
+And made another improved version after I viewed some other people solutions. I added `bingo` and score attributes on `Board`, allowing better implementation for `play_to_loose`

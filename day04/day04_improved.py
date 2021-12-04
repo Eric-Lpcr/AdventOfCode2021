@@ -1,9 +1,6 @@
 import sys
 from operator import not_
-from itertools import compress
-
-
-LOST = -1  # beware that 0 can be a winning score if winning draw is 0 ball!
+from itertools import compress, filterfalse
 
 
 class Board:
@@ -12,21 +9,26 @@ class Board:
         self.cells = [int(value) for value in text.split()]  # split w/o args manages multiple standard separators
         self.n_lines = int(len(self.cells) / self.n_cols)
         self.marked = [False] * len(self.cells)
+        self.bingo = False
+        self.score = None
 
     def clear(self):
         self.marked = [False] * len(self.cells)
+        self.bingo = False
+        self.score = None
 
-    def match(self, number):
-        try:
-            index = self.cells.index(number)
-            self.marked[index] = True
-            line = int(index / self.n_cols)
-            col = index - line * self.n_cols
-            if self.check_line(line) or self.check_column(col):
-                return self.score(number)
-        except ValueError:
-            pass
-        return LOST
+    def match(self, draw):
+        if not self.bingo:
+            try:
+                index = self.cells.index(draw)
+                self.marked[index] = True
+                line = int(index / self.n_cols)
+                col = index - line * self.n_cols
+                if self.check_line(line) or self.check_column(col):
+                    self.bingo = True
+                    self.score = sum(compress(self.cells, map(not_, self.marked))) * draw
+            except ValueError:
+                pass
 
     def check_line(self, line):
         i = line * self.n_cols
@@ -35,9 +37,6 @@ class Board:
 
     def check_column(self, col):
         return sum(self.marked[col::self.n_cols]) == self.n_lines
-
-    def score(self, last_draw):
-        return sum(compress(self.cells, map(not_, self.marked))) * last_draw
 
     def __repr__(self):
         s = ''
@@ -65,22 +64,22 @@ class BoardSet:
         self.clear()
         for draw in draws:
             for board in self.boards:
-                score = board.match(draw)
-                if score != LOST:
-                    return score
-        return LOST
+                board.match(draw)
+                if board.bingo:
+                    return board.score
+        return None
 
     def play_to_loose(self, draws):
         self.clear()
-        remaining_boards = list(self.boards)  # don't want to modify board set during game
+        remaining_boards = len(self.boards)
         for draw in draws:
-            for board in list(remaining_boards):  # need a copy of remaining boards because we may remove some
-                score = board.match(draw)
-                if score != LOST:
-                    remaining_boards.remove(board)
-                if len(remaining_boards) == 0:
-                    return board.score(draw)
-        return LOST
+            for board in filterfalse(lambda b: b.bingo, self.boards):
+                board.match(draw)
+                if board.bingo:
+                    remaining_boards -= 1
+                    if remaining_boards == 0:
+                        return board.score
+        return None
 
 
 def main():
