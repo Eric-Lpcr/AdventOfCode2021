@@ -2,12 +2,12 @@ import sys
 
 
 class Submarine:
-    def __init__(self, hpos=0, depth=0):
-        self.hpos = hpos
+    def __init__(self, h_pos=0, depth=0):
+        self.h_pos = h_pos
         self.depth = depth
 
     def forward(self, units):
-        self.hpos += units
+        self.h_pos += units
 
     def down(self, units):
         self.depth += units
@@ -26,12 +26,12 @@ class Submarine:
 
 
 class Submarine2(Submarine):
-    def __init__(self, hpos=0, depth=0, aim=0):
-        Submarine.__init__(self, hpos, depth)
+    def __init__(self, h_pos=0, depth=0, aim=0):
+        Submarine.__init__(self, h_pos, depth)
         self.aim = aim
 
     def forward(self, units):
-        self.hpos += units
+        self.h_pos += units
         self.depth += self.aim * units
 
     def down(self, units):
@@ -51,11 +51,11 @@ def main():
 
     submarine = Submarine()
     submarine.navigate(commands)
-    print(f"Part 1: position is {submarine.hpos * submarine.depth}")
+    print(f"Part 1: position is {submarine.h_pos * submarine.depth}")
 
     submarine2 = Submarine2()
     submarine2.navigate(commands)
-    print(f"Part 2: position is {submarine2.hpos * submarine2.depth}")
+    print(f"Part 2: position is {submarine2.h_pos * submarine2.depth}")
 
 
 if __name__ == '__main__':
