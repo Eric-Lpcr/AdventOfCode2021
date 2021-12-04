@@ -2,8 +2,8 @@ import sys
 from itertools import pairwise, tee
 
 
-def nb_increases(iterable):
-    # number of increasing pairwise values
+def count_increases(iterable):
+    # Counts increasing pairwise values
     return sum(map(lambda p: p[0] < p[1], pairwise(iterable)))  # sum of bools gives number of True values
 
 
@@ -32,10 +32,10 @@ def main():
     with open(filename) as f:
         depths = list(map(int, f.readlines()))
 
-    result1 = nb_increases(depths)
+    result1 = count_increases(depths)
     print(f"Part 1: number of increases is {result1}")
 
-    result2 = nb_increases(list(map(sum, triplewise(depths))))
+    result2 = count_increases(list(map(sum, triplewise(depths))))
     print(f"Part 2: number of increases is {result2}")
 
 
