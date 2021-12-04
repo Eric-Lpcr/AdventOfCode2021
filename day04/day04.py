@@ -55,24 +55,34 @@ class Board:
         return s
 
 
-def play_to_win(draws, boards):
-    for draw in draws:
-        for board in boards:
-            score = board.match(draw)
-            if score != LOST:
-                return score
-    return LOST
+class BoardSet:
+    def __init__(self, text_blocks):
+        self.boards = [Board(block) for block in text_blocks]
 
+    def clear(self):
+        for board in self.boards:
+            board.clear()
 
-def play_to_loose(draws, boards):
-    for draw in draws:
-        for board in list(boards):  # need a copy of boards because we may remove some
-            score = board.match(draw)
-            if score != LOST:
-                boards.remove(board)
-            if len(boards) == 0:
-                return board.score(draw)
-    return LOST
+    def play_to_win(self, draws):
+        self.clear()
+        for draw in draws:
+            for board in self.boards:
+                score = board.match(draw)
+                if score != LOST:
+                    return score
+        return LOST
+
+    def play_to_loose(self, draws):
+        self.clear()
+        remaining_boards = self.boards
+        for draw in draws:
+            for board in list(remaining_boards):  # need a copy of boards because we may remove some
+                score = board.match(draw)
+                if score != LOST:
+                    remaining_boards.remove(board)
+                if len(remaining_boards) == 0:
+                    return board.score(draw)
+        return LOST
 
 
 def main():
@@ -83,15 +93,12 @@ def main():
     with open(filename) as f:
         blocks = f.read().split('\n\n')
         draws = [int(d) for d in blocks.pop(0).split(',')]
-        boards = [Board(block) for block in blocks]
+        boards = BoardSet(blocks)
 
-    score1 = play_to_win(draws, boards)
+    score1 = boards.play_to_win(draws)
     print(f'Part 1: score is {score1}')
 
-    for board in boards:
-        board.clear()
-
-    score2 = play_to_loose(draws, boards)
+    score2 = boards.play_to_loose(draws)
     print(f'Part 2: score is {score2}')
 
 
