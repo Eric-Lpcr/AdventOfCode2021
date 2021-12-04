@@ -5,8 +5,8 @@ from itertools import compress, filterfalse
 
 class Board:
     def __init__(self, text):
-        self.n_cols = len(text.splitlines())
         self.cells = [int(value) for value in text.split()]  # split w/o args manages multiple standard separators
+        self.n_cols = len(text.splitlines())
         self.n_lines = int(len(self.cells) / self.n_cols)
         self.marked = [False] * len(self.cells)
         self.bingo = False
@@ -38,17 +38,14 @@ class Board:
     def check_column(self, col):
         return sum(self.marked[col::self.n_cols]) == self.n_lines
 
+    mark = ['  ', '* ']
+
     def __repr__(self):
         s = ''
-        for line in range(self.n_lines):
-            for col in range(self.n_cols):
-                index = line * self.n_lines + col
-                s += '{:2d}'.format(self.cells[index])
-                if self.marked[index]:
-                    s += '* '
-                else:
-                    s += '  '
-            s += '\n'
+        for index in range(len(self.cells)):
+            if index > 0 and index % self.n_cols == 0:
+                s += '\n'
+            s += f'{self.cells[index]:2d}{Board.mark[int(self.marked[index])]}'
         return s
 
 
