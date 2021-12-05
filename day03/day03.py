@@ -9,24 +9,24 @@ def get_bits_at(bit_pos, integers):
 
 
 def compute_power_consumption(reports):
-    bit_width = max(reports).bit_length()
+    bit_length = max(reports).bit_length()
     half_length = len(reports) / 2
     gamma_rate = 0
-    for bit_pos in range(bit_width):
+    for bit_pos in range(bit_length):
         bits = get_bits_at(bit_pos, reports)
         if sum(bits) > half_length:  # more ones than zeroes
             gamma_rate |= 1 << bit_pos
 
-    epsilon_rate = gamma_rate ^ (pow(2, bit_width) - 1)  # flip all bits (xor with ones)
+    epsilon_rate = gamma_rate ^ (pow(2, bit_length) - 1)  # flip all bits (xor with ones)
 
     return gamma_rate * epsilon_rate
 
 
 def find_report(reports, selector_criteria):
-    bit_width = max(reports).bit_length()
+    bit_length = max(reports).bit_length()
     report = 0
 
-    for bit_pos in reversed(range(bit_width)):
+    for bit_pos in reversed(range(bit_length)):
         # reversed is necessary here because each loop prunes the reports, and we have to start at left bit
         bits = get_bits_at(bit_pos, reports)
         selector = selector_criteria(bits)
