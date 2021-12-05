@@ -10,11 +10,11 @@ def get_bits_at(bit_pos, integers):
 
 def compute_power_consumption(reports):
     bit_length = max(reports).bit_length()
-    half_length = len(reports) / 2
+    half_report_count = len(reports) / 2
     gamma_rate = 0
     for bit_pos in range(bit_length):
         bits = get_bits_at(bit_pos, reports)
-        if sum(bits) > half_length:  # more ones than zeroes
+        if sum(bits) > half_report_count:  # more ones than zeroes
             gamma_rate |= 1 << bit_pos
 
     epsilon_rate = gamma_rate ^ (pow(2, bit_length) - 1)  # flip all bits (xor with ones)
