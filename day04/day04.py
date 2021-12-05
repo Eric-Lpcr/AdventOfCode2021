@@ -1,4 +1,3 @@
-import sys
 from operator import not_
 from itertools import compress
 
@@ -83,11 +82,8 @@ class BoardSet:
         return LOST
 
 
-def main():
-    filename = 'input.txt'
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-
+def main(filename):
+    print(f'--------- {filename}')
     with open(filename) as f:
         blocks = f.read().split('\n\n')
         draws = [int(d) for d in blocks.pop(0).split(',')]
@@ -101,4 +97,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('test.txt')
+    main('input.txt')

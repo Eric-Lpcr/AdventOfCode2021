@@ -1,4 +1,3 @@
-import sys
 from itertools import compress
 
 
@@ -59,11 +58,8 @@ def compute_life_support_rating(reports):
     return oxygen_generator_rating * co2_scrubber_rating
 
 
-def main():
-    filename = 'input.txt'
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-
+def main(filename):
+    print(f'--------- {filename}')
     with open(filename) as f:
         reports = [int(line, 2) for line in f.readlines()]
 
@@ -75,4 +71,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('test.txt')
+    main('input.txt')

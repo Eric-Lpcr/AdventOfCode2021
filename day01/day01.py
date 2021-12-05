@@ -1,4 +1,3 @@
-import sys
 from itertools import pairwise, tee, islice
 
 
@@ -15,11 +14,8 @@ def triplewise(iterable):
         yield a, b, c
 
 
-def main():
-    filename = 'input.txt'
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-
+def main(filename):
+    print(f'--------- {filename}')
     with open(filename) as f:
         depths = list(map(int, f.readlines()))
 
@@ -31,4 +27,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('test.txt')
+    main('input.txt')

@@ -1,6 +1,3 @@
-import sys
-
-
 class Submarine:
     def __init__(self, h_pos=0, depth=0):
         self.h_pos = h_pos
@@ -41,11 +38,8 @@ class Submarine2(Submarine):
         self.aim -= units
 
 
-def main():
-    filename = 'input.txt'
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-
+def main(filename):
+    print(f'--------- {filename}')
     with open(filename) as f:
         commands = [(command, int(units)) for command, units in [line.split() for line in f.readlines()]]
 
@@ -59,4 +53,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('test.txt')
+    main('input.txt')

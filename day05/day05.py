@@ -1,4 +1,3 @@
-import sys
 from collections import namedtuple
 from itertools import zip_longest
 from functools import partial
@@ -62,11 +61,8 @@ class OceanFloor:
         return s
 
 
-def main():
-    filename = 'input.txt'
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-
+def main(filename):
+    print(f'--------- {filename}')
     with open(filename) as f:
         lines = f.readlines()
 
@@ -84,4 +80,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('test.txt')
+    main('input.txt')
