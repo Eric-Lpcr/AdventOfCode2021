@@ -11,3 +11,8 @@ to a bit (bool) selector.
 
 No need for log2 computation in order to get the number of bits in a number,
 there's a builtin function on int for that: `bit_length`
+
+Nice article here:
+[Bitwise Operators in Python](https://realpython.com/python-bitwise-operators/#binary-system-in-five-minutes)
+
+I changed back the bit extraction to the normalized one I was using before refactoring...

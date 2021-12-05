@@ -3,9 +3,7 @@ from itertools import compress
 
 
 def get_bits_at(bit_pos, integers):
-    mask = 1 << bit_pos
-    bits = (bool(i & mask) for i in integers)
-    return bits
+    return (i >> bit_pos & 1 for i in integers)
 
 
 def compute_power_consumption(reports):
