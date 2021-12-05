@@ -1,4 +1,4 @@
-# Day 4: Giant Squid
+# [Day 4: Giant Squid](https://adventofcode.com/2021/day/4)
 
 Bingo board is a matrix for which I chose to store cells in a list and use a single index from line/column. This facilitates finding a number, retrieving unmarked cells to compute score.
 

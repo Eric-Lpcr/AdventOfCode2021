@@ -1,4 +1,4 @@
-# Day 3: Binary Diagnostic
+# [Day 3: Binary Diagnostic](https://adventofcode.com/2021/day/3)
 
 I choose to solve it with binary computation.
 
