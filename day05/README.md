@@ -12,5 +12,5 @@ Finally, to compute the number of overlapping lines, I just count the dict value
 Note that I sum up a generator (no need for a list).
 
 I tried to find an alternative with map to extract the values over 1. I fingered out how to avoid the classical lambda function and fund functools.partial, which can be used with an operator function.
-Tip: partial allows to fill partially a function parameters, but left ones first. x>1 shoud then be reverted to 1<x and lead to partial(lt, 1).
+Tip: partial allows to fill partially a function parameters, but left ones first. x>1 should then be reverted to 1<x and lead to partial(lt, 1).
 The code becomes hard to understand at first sight.
