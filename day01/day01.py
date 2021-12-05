@@ -1,19 +1,10 @@
 import sys
-from itertools import pairwise, tee
+from itertools import pairwise, tee, islice
 
 
 def count_increases(iterable):
     # Counts increasing pairwise values
     return sum(map(lambda p: p[0] < p[1], pairwise(iterable)))  # sum of bools gives number of True values
-
-
-def my_triplewise(iterable):
-    # triplet_wise('ABCDEFG') --> ABC BCD CDE DEF EFG
-    a, b, c = tee(iterable, 3)
-    next(b, None)
-    next(c, None)
-    next(c, None)
-    return zip(a, b, c)
 
 
 def triplewise(iterable):
