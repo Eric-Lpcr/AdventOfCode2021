@@ -1,6 +1,5 @@
 import sys
 from itertools import compress
-from math import log
 
 
 def get_bits_at(bit_pos, integers):
@@ -10,7 +9,7 @@ def get_bits_at(bit_pos, integers):
 
 
 def compute_power_consumption(reports):
-    bit_width = int(log(max(reports), 2) + 1)
+    bit_width = max(reports).bit_length()
     half_length = len(reports) / 2
     gamma_rate = 0
     for bit_pos in range(bit_width):
@@ -24,7 +23,7 @@ def compute_power_consumption(reports):
 
 
 def find_report(reports, selector_criteria):
-    bit_width = int(log(max(reports), 2) + 1)
+    bit_width = max(reports).bit_length()
     report = 0
 
     for bit_pos in reversed(range(bit_width)):
