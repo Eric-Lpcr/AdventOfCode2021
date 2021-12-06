@@ -3,8 +3,8 @@ def compute_lantern_fish_population(fishes, days):
     fish_count = [fishes.count(days_left) for days_left in range(9)]  # need to manage 0 to 8 days left population
     new_cycle_start = 6
     for _ in range(days):
-        youngsters = times_up = fish_count.pop(0)
-        fish_count[new_cycle_start] += times_up
+        youngsters = try_again_fish = fish_count.pop(0)
+        fish_count[new_cycle_start] += try_again_fish
         fish_count.append(youngsters)
     return sum(fish_count)
 
