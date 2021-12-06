@@ -20,8 +20,7 @@ class OceanFloor:
         self.max_x = self.max_y = 0  # just for __repr__
 
     def map_lines(self, lines, filter_diagonals=False):
-        for line in lines:
-            x1, y1, x2, y2 = [int(c) for c in line.replace('->', ',').split(',')]
+        for x1, y1, x2, y2 in lines:
             if filter_diagonals and not (x1 == x2 or y1 == y2):
                 continue
             self.map_line(x1, y1, x2, y2)
@@ -64,7 +63,7 @@ class OceanFloor:
 def main(filename):
     print(f'--------- {filename}')
     with open(filename) as f:
-        lines = f.readlines()
+        lines = [[int(c) for c in line.replace('->', ',').split(',')] for line in f.readlines()]
 
     ocean_floor = OceanFloor()
     ocean_floor.map_lines(lines, filter_diagonals=True)
