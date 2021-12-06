@@ -14,18 +14,19 @@ def inclusive_range(start, stop=None, step=None):
     return range(start, stop, step)
 
 
+Point = namedtuple('Point', ['x', 'y'])
+
+
 class OceanFloor:
     def __init__(self):
         self.vents = dict()
-        self.max_x = self.max_y = 0  # just for __repr__
+        self.max = Point(0, 0)  # just for __repr__
 
     def map_lines(self, lines, filter_diagonals=False):
         for x1, y1, x2, y2 in lines:
             if filter_diagonals and not (x1 == x2 or y1 == y2):
                 continue
             self.map_line(x1, y1, x2, y2)
-
-    Point = namedtuple('Point', ['x', 'y'])
 
     def map_line(self, x1, y1, x2, y2):
         fill_value = None
@@ -34,10 +35,9 @@ class OceanFloor:
         elif y1 == y2:
             fill_value = y1
         for x, y in zip_longest(inclusive_range(x1, x2), inclusive_range(y1, y2), fillvalue=fill_value):
-            p = OceanFloor.Point(x, y)
+            p = Point(x, y)
             self.vents[p] = self.vents.get(p, 0) + 1
-        self.max_x = max(self.max_x, x1, x2)
-        self.max_y = max(self.max_y, y1, y2)
+        self.max = Point(max(self.max.x, x1, x2), max(self.max.y, y1, y2))
 
     def count_overlaps(self):
         return sum(v > 1 for v in self.vents.values())
@@ -53,9 +53,9 @@ class OceanFloor:
 
     def __repr__(self):
         s = ''
-        for y in inclusive_range(self.max_y):
-            for x in inclusive_range(self.max_x):
-                s += f'{self.vents.get(OceanFloor.Point(x, y), ".")}'
+        for y in inclusive_range(self.max.y):
+            for x in inclusive_range(self.max.x):
+                s += f'{self.vents.get(Point(x, y), ".")}'
             s += '\n'
         return s
 
