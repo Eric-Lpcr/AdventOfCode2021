@@ -41,6 +41,7 @@ class OceanFloor:
 
     def count_overlaps(self):
         return sum(v > 1 for v in self.vents.values())
+        # return sum(1 for v in self.vents.values() if v > 1)
 
     def count_overlaps2(self):
         # just to learn about functools.partial...
