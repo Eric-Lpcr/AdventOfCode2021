@@ -19,8 +19,8 @@ for a few hours...
 Part 2 fuel consumption is a classic running sum `1 + 2 + 3 + 4 + ... + k` which equals to `k * (k + 1) / 2`. k * k is a 
 square (wow!) and I read in the papers that the mean mas minimizing the delta squares... Here we are for part 2.
 
-But unlike which is a number taken in the data, mean is a computation and gives a decimal result in our case. So I tried
-with the two surrounding integers and chose the one which was giving the lowest total consumption.
+But unlike median which is a number taken in the data, mean is a computation and gives a decimal result in our case. 
+So I tried with the two surrounding integers and chose the one which was giving the lowest total consumption.
 
 I'm not fully satisfied with part 2 solution because it's not strongly designed with mathematics, but resides in a 
 lucky feeling attempt ;-)
