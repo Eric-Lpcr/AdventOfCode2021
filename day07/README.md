@@ -30,3 +30,6 @@ By the way, no Python trick in this solution except classic itertools, but a rea
 Loved this one later:
 [On the Unreasonable Efficacy of the Mean in Minimizing the Fuel Expenditure of Crab 
 Submarines](https://www.reddit.com/r/adventofcode/comments/rawxad/2021_day_7_part_2_i_wrote_a_paper_on_todays/)
+
+I also lately discovered the `statistics` module in the standard library. By the way, my solution with an histogram also
+serves the performance of the total consumption as it avoids computing it for each crab. 
