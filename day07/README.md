@@ -1,6 +1,6 @@
 # [Day 7: The Treachery of Whales](https://adventofcode.com/2021/day/7)
 
-I wouldn't solve this one with brute force, but my mathematical background was not strong enough.
+I didn't solve this one with brute force, but my mathematical background was not strong enough.
 I googled for a minimization of deltas from data to a value, and found some articles explaining the difference
 between mean and median.
 
