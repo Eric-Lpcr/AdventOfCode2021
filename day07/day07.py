@@ -44,16 +44,16 @@ def compute_minimal_fuel2(crab_positions):
     optimal_crab_position, counts = mean(crab_positions)
 
     # mean() is a decimal, let's try with previous and next int values
-    optimal_crab_position1 = int(optimal_crab_position)
-    fuel1 = sum(sum_of_k(position - optimal_crab_position1) * count for position, count in counts.items())
+    optimal_crab_position_low = int(optimal_crab_position)
+    fuel1 = sum(sum_of_k(position - optimal_crab_position_low) * count for position, count in counts.items())
 
-    optimal_crab_position2 = int(round(optimal_crab_position, 0))
-    fuel2 = sum(sum_of_k(position - optimal_crab_position2) * count for position, count in counts.items())
+    optimal_crab_position_high = int(round(optimal_crab_position, 0))
+    fuel2 = sum(sum_of_k(position - optimal_crab_position_high) * count for position, count in counts.items())
 
     if fuel1 < fuel2:
-        return fuel1, optimal_crab_position1
+        return fuel1, optimal_crab_position_low
     else:
-        return fuel2, optimal_crab_position2
+        return fuel2, optimal_crab_position_high
 
 
 def main(filename):
