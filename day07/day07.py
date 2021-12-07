@@ -24,7 +24,7 @@ def median(data):
 def mean(data):
     counts = histogram(data)
     total_count = sum(counts.values())
-    mean_value = sum(d * c for d, c in counts.items()) / total_count
+    mean_value = sum(v * c for v, c in counts.items()) / total_count
     return mean_value, counts
 
 
@@ -37,7 +37,7 @@ def compute_minimal_fuel1(crab_positions):
 def sum_of_k(k):
     """Sum of the k first integers starting at 1"""
     k = abs(int(k))  # k must be a positive integer
-    return int(k * (k + 1) / 2)
+    return k * (k + 1) // 2
 
 
 def compute_minimal_fuel2(crab_positions):
