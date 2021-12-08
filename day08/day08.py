@@ -4,12 +4,12 @@ ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE = list(range(10))
 digit_segment_count = {ZERO: 6, ONE: 2, TWO: 5, THREE: 5, FOUR: 4, FIVE: 5, SIX: 6, SEVEN: 3, EIGHT: 7, NINE: 6}
 
 segment_count_digits = defaultdict(list)  # number of segments => digits having this size
-[segment_count_digits[segment_count].append(digit) for digit, segment_count in digit_segment_count.items()]
+[segment_count_digits[sc].append(digit) for digit, sc in digit_segment_count.items()]
 
 
 def count_unambiguous_outputs(entries):
     unambiguous_segment_count = set(sc for sc, digits in segment_count_digits.items() if len(digits) == 1)
-    result = sum(sum(1 for output in outputs if len(output) in unambiguous_segment_count) for _, outputs in entries)
+    result = sum(sum(len(output) in unambiguous_segment_count for output in outputs) for _, outputs in entries)
     return result
 
 
@@ -47,13 +47,8 @@ def decode_patterns(patterns):
             digit = SIX
         learn(pattern, digit)
 
-    # From 6 and 1 digits we can identify the upper right segment (in 1 but not in 6)
-    # ur_segment = next(s for s in digit_pattern[1] if s not in digit_pattern[6])
-    ur_segment = (digit_pattern[ONE] - digit_pattern[SIX]).pop()
-
     # Lower left segment is in digit 6 but not in 3 nor in 4
     #   (all 3 and 4 digits segments makes a 9 which is all except lower left)
-    # ll_segment = next(s for s in digit_pattern[6] if s not in digit_pattern[3] and s not in digit_pattern[4])
     ll_segment = (digit_pattern[SIX] - digit_pattern[THREE] - digit_pattern[FOUR]).pop()
 
     # From 5 segments remaining patterns (digits 2 and 5), only digit 2 has upper right segment on
@@ -61,13 +56,13 @@ def decode_patterns(patterns):
     for pattern in list(patterns):
         digit = None
         if len(pattern) == 5:
-            digit = TWO if ur_segment in pattern else FIVE
+            digit = TWO if ll_segment in pattern else FIVE
         elif len(pattern) == 6:
             digit = ZERO if ll_segment in pattern else NINE
         learn(pattern, digit)
 
     if len(patterns) != 0:
-        raise Exception('Patterns not decoded')
+        raise Exception('Some patterns have not been decoded')
 
     return pattern_digit
 
