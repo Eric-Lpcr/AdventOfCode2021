@@ -80,11 +80,8 @@ def sum_up_outputs(entries):
 
 def main(filename):
     print(f'--------- {filename}')
-    entries = list()
     with open(filename) as f:
-        for line in f.readlines():
-            patterns, outputs = line.split('|')
-            entries.append((patterns.split(), outputs.split()))
+        entries = [[blocks.split() for blocks in line.split('|')] for line in f.readlines()]
 
     print(f'Part 1: unambiguous digits appearances are {count_unambiguous_outputs(entries)}')
     print(f'Part 2: sum of outputs is {sum_up_outputs(entries)}')
