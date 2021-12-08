@@ -25,7 +25,7 @@ Both (2, 5) and (0, 9) differ from the lower left segment.
 How to find its letter?
 
 Let's superimpose 3 and 4, we got all segments lighted except the lower left one (like in digit 9 representation). 
-The lower left segment is on in 6 or 8, let's remove them all segments from 3 and 4 and we'll got it. 
+The lower left segment is on in 6 or 8, let's remove from one or the other all segments from 3 and 4, and we'll got it. 
 Just need to match it against remaining patterns and that's it, got all the key.
 
 I started using lists comprehensions with an if statement like `[item in list if item in other_list]` to filter patterns,
