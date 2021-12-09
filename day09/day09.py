@@ -3,6 +3,9 @@ from itertools import islice
 from math import prod
 
 
+neighborhood = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+
 def add_borders(heightmap):
     w = len(heightmap[0]) + 2
     return ['9' * w] + ['9' + line + '9' for line in heightmap] + ['9' * w]
@@ -14,15 +17,13 @@ def find_low_points(heightmap):
     w = len(heightmap[0])
     for i in range(1, h-1):
         for j in range(1, w-1):
-            neighbors = heightmap[i-1][j] + heightmap[i][j-1:j+2:2] + heightmap[i+1][j]
-            if all(heightmap[i][j] < n for n in neighbors):
+            if all(heightmap[i][j] < heightmap[i+di][j+dj] for di, dj in neighborhood):
                 low_points.append((i, j))
     return low_points
 
 
 def compute_risk_level(heightmap):
-    low_points = find_low_points(heightmap)
-    return sum(int(heightmap[i][j]) + 1 for i, j in low_points)
+    return sum(int(heightmap[i][j]) + 1 for i, j in find_low_points(heightmap))
 
 
 def flood_fill(heightmap, i, j):
@@ -34,7 +35,7 @@ def flood_fill(heightmap, i, j):
         if colored_map[i][j] == '0':
             colored_map[i][j] = '1'
             count_points += 1
-            queue.extend([(i, j-1), (i, j+1), (i-1, j), (i+1, j)])
+            queue.extend([(i+di, j+dj) for di, dj in neighborhood])
     return colored_map, count_points
 
 
