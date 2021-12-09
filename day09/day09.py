@@ -51,7 +51,7 @@ def compute_basins(heightmap):
 def main(filename):
     print(f'--------- {filename}')
     with open(filename) as f:
-        heightmap = f.read().splitlines(keepends=False)
+        heightmap = f.read().splitlines()
     heightmap = add_borders(heightmap)
 
     print(f'Part 1: total risk level is {compute_risk_level(heightmap)}')
