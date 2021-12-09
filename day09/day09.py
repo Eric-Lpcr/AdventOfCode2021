@@ -28,17 +28,13 @@ def compute_risk_level(heightmap):
 def flood_fill(heightmap, i, j):
     count_points = 0
     colored_map = [[ch if ch == '9' else '0' for ch in line] for line in heightmap]
-    queue = deque()
-    queue.append((i, j))
+    queue = deque([(i, j)])
     while len(queue) > 0:
         i, j = queue.pop()
         if colored_map[i][j] == '0':
             colored_map[i][j] = '1'
             count_points += 1
-            queue.append((i, j-1))
-            queue.append((i, j+1))
-            queue.append((i-1, j))
-            queue.append((i+1, j))
+            queue.extend([(i, j-1), (i, j+1), (i-1, j), (i+1, j)])
     return colored_map, count_points
 
 
