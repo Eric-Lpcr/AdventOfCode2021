@@ -14,6 +14,6 @@ I just needed to convert the lines from strings to lists of chars in order to se
 This is done implicitly when computing the base colored map and reducing everything but limits (nines) to zeroes
 before filling.~~~~
 
-Flood fill algorith is basic, no need for optimization here. 
+Flood fill algorith is basic but not recursive, no need for optimization here. 
 
 I later generalized neighborhood definition.
