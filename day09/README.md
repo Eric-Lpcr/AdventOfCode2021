@@ -16,4 +16,4 @@ before filling.~~~~
 
 Flood fill algorith is basic but not recursive, no need for optimization here. 
 
-I later generalized neighborhood definition.
+I later generalized the neighborhood definition.
