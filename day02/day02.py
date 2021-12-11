@@ -21,6 +21,7 @@ class Submarine:
         for command in commands:
             self.move(*command)
 
+    @property
     def position(self):
         return self.h_pos * self.depth
 
@@ -48,11 +49,11 @@ def main(filename):
 
     submarine = Submarine()
     submarine.navigate(commands)
-    print(f"Part 1: position is {submarine.position()}")
+    print(f"Part 1: position is {submarine.position}")
 
     submarine2 = Submarine2()
     submarine2.navigate(commands)
-    print(f"Part 2: position is {submarine2.position()}")
+    print(f"Part 2: position is {submarine2.position}")
 
 
 if __name__ == '__main__':
