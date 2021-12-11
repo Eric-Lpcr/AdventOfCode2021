@@ -1,65 +1,73 @@
 from copy import deepcopy
 from itertools import product
 
-grid_size = 10
-neighborhood = set(product([-1, 0, 1], repeat=2)) - {(0, 0)}
 
+class OctopusGrid:
+    def __init__(self, levels, print_steps=False):
+        self.flash_count = 0
+        self.steps = 0
+        self._levels = deepcopy(levels)
+        self._lines, self._cols = len(self._levels), len(self._levels[0])
+        self._print_steps = print_steps
 
-def neighbors(i, j):
-    return ((i + di, j + dj) for di, dj in neighborhood
-            if 0 <= i + di < grid_size and 0 <= j + dj < grid_size)
+    def step_times(self, times=1):
+        for _ in range(times):
+            self._step_once()
 
+    def find_synchro(self):
+        step_flash_count = 0
+        while step_flash_count != self._lines * self._cols:
+            step_flash_count = self._step_once()
 
-def flash(octopuses, i, j):
-    octopuses[i][j] = 0
-    count_flashes = 1
-    for ni, nj in neighbors(i, j):
-        if octopuses[ni][nj] == 0:  # just flashed in this step
-            continue
-        octopuses[ni][nj] += 1
-        if octopuses[ni][nj] == 10:  # proximity triggered flash
-            count_flashes += flash(octopuses, ni, nj)
-    return count_flashes
+    _neighborhood = set(product([-1, 0, 1], repeat=2)) - {(0, 0)}
 
+    def _neighbors(self, i, j):
+        return ((i + di, j + dj) for di, dj in OctopusGrid._neighborhood
+                if 0 <= i + di < self._lines and 0 <= j + dj < self._cols)
 
-def step_once(octopuses):
-    for i, j in product(range(grid_size), repeat=2):
-        octopuses[i][j] += 1
+    def _all_cells(self):
+        return product(range(self._lines), range(self._cols))
 
-    count_flashes = 0
-    for i, j in product(range(grid_size), repeat=2):
-        if octopuses[i][j] > 9:
-            count_flashes += flash(octopuses, i, j)
-    return count_flashes
+    def _wanna_flash(self, i, j):
+        if self._levels[i][j] > 9:
+            self._levels[i][j] = 0
+            self.flash_count += 1
+            for ni, nj in self._neighbors(i, j):
+                if self._levels[ni][nj] == 0:  # just flashed in the current step
+                    continue
+                self._levels[ni][nj] += 1
+                if self._levels[ni][nj] == 10:  # proximity triggered flash
+                    self._wanna_flash(ni, nj)
 
+    def _step_once(self):
+        previous_flash_count = self.flash_count
+        self.steps += 1
+        for i, j in self._all_cells():
+            self._levels[i][j] += 1
+        for i, j in self._all_cells():
+            self._wanna_flash(i, j)
 
-def step_some(octopuses, n_steps):
-    count_flashes = 0
-    for step in range(n_steps):
-        count_flashes += step_once(octopuses)
-        # if step+1 < 10 or (step+1) % 10 == 0:
-        #     print(f'\nAfter step {step+1}:')
-        #     print('\n'.join(''.join(str(o) for o in line) for line in octopuses))
-    return count_flashes
+        if self._print_steps and (self.steps + 1 < 10 or (self.steps + 1) % 10 == 0):
+            print(f'After step {self.steps + 1}:\n{self}\n')
 
+        return self.flash_count - previous_flash_count
 
-def find_synchro(octopuses):
-    step = count_flashes = 0
-    while count_flashes != grid_size * grid_size:
-        count_flashes = step_once(octopuses)
-        step += 1
-    return step
+    def __repr__(self):
+        return '\n'.join(''.join(str(level) for level in line) for line in self._levels)
 
 
 def main(filename):
     print(f'--------- {filename}')
     with open(filename) as f:
-        puzzle = [[int(c) for c in line] for line in f.read().splitlines()]
+        levels = [[int(c) for c in line] for line in f.read().splitlines()]
 
-    octopuses = deepcopy(puzzle)
-    print(f'Part 1: number of flashes is {step_some(octopuses, 100)}')
-    octopuses = deepcopy(puzzle)
-    print(f'Part 2: first synchro is at step {find_synchro(octopuses)}')
+    octopuses = OctopusGrid(levels)
+    octopuses.step_times(100)
+    print(f'Part 1: number of flashes is {octopuses.flash_count}')
+
+    octopuses = OctopusGrid(levels)
+    octopuses.find_synchro()
+    print(f'Part 2: first synchro is at step {octopuses.steps}')
 
 
 if __name__ == '__main__':
