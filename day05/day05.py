@@ -19,8 +19,8 @@ Point = namedtuple('Point', ['x', 'y'])
 
 class OceanFloor:
     def __init__(self):
-        self.vents = dict()
-        self.max = Point(0, 0)  # just for __repr__
+        self._vents = dict()
+        self._max = Point(0, 0)  # just for __repr__
 
     def map_lines(self, lines, filter_diagonals=False):
         for x1, y1, x2, y2 in lines:
@@ -36,27 +36,27 @@ class OceanFloor:
             fill_value = y1
         for x, y in zip_longest(inclusive_range(x1, x2), inclusive_range(y1, y2), fillvalue=fill_value):
             p = Point(x, y)
-            self.vents[p] = self.vents.get(p, 0) + 1
-        self.max = Point(max(self.max.x, x1, x2), max(self.max.y, y1, y2))
+            self._vents[p] = self._vents.get(p, 0) + 1
+        self._max = Point(max(self._max.x, x1, x2), max(self._max.y, y1, y2))
 
     def count_overlaps(self):
-        return sum(v > 1 for v in self.vents.values())
-        # return sum(1 for v in self.vents.values() if v > 1)
+        return sum(v > 1 for v in self._vents.values())
+        # return sum(1 for v in self._vents.values() if v > 1)
 
     def count_overlaps2(self):
         # just to learn about functools.partial...
         # partial(lt, 1) gives a function which states if 1 is lower than parameter
         # equivalent to sum(1 < v for v in self.vents.values())
-        return sum(map(partial(lt, 1), self.vents.values()))
+        return sum(map(partial(lt, 1), self._vents.values()))
 
     def clear(self):
-        self.vents = dict()
+        self._vents = dict()
 
     def __repr__(self):
         s = ''
-        for y in inclusive_range(self.max.y):
-            for x in inclusive_range(self.max.x):
-                s += f'{self.vents.get(Point(x, y), ".")}'
+        for y in inclusive_range(self._max.y):
+            for x in inclusive_range(self._max.x):
+                s += f'{self._vents.get(Point(x, y), ".")}'
             s += '\n'
         return s
 
