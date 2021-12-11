@@ -1,66 +1,51 @@
-import sys
-from operator import not_
-from itertools import compress, filterfalse
+from itertools import filterfalse
 
 
 class Board:
     def __init__(self, text):
-        self.cells = [int(value) for value in text.split()]  # split w/o args manages multiple standard separators
-        self.n_cols = len(text.splitlines())
-        self.n_lines = int(len(self.cells) / self.n_cols)
-        self.marked = [False] * len(self.cells)
+        self._cells = [int(value) for value in text.split()]  # split w/o args manages multiple standard separators
+        self._n_cols = len(text.splitlines())
+        self._n_lines = int(len(self._cells) / self._n_cols)
+        self._line_match = [0] * self._n_lines
+        self._col_match = [0] * self._n_cols
+
         self.bingo = False
-        self.score = None
+        self.score = sum(self._cells)
 
     def clear(self):
-        self.marked = [False] * len(self.cells)
+        self._line_match = [0] * self._n_lines
+        self._col_match = [0] * self._n_cols
         self.bingo = False
-        self.score = None
+        self.score = sum(self._cells)
 
     def match(self, draw):
         if not self.bingo:
             try:
-                index = self.cells.index(draw)
-                self.marked[index] = True
-                line = int(index / self.n_cols)
-                col = index - line * self.n_cols
-                if self.check_line(line) or self.check_column(col):
+                index = self._cells.index(draw)
+                self.score -= draw
+                line = int(index / self._n_cols)
+                col = index - line * self._n_cols
+                self._line_match[line] += 1
+                self._col_match[col] += 1
+                if self._line_match[line] == self._n_cols or self._col_match[col] == self._n_lines:
                     self.bingo = True
-                    self.score = sum(compress(self.cells, map(not_, self.marked))) * draw
+                    self.score *= draw
             except ValueError:
                 pass
-
-    def check_line(self, line):
-        i = line * self.n_cols
-        j = i + self.n_cols
-        return sum(self.marked[i:j]) == self.n_cols
-
-    def check_column(self, col):
-        return sum(self.marked[col::self.n_cols]) == self.n_lines
-
-    mark = ['  ', '* ']
-
-    def __repr__(self):
-        s = ''
-        for index in range(len(self.cells)):
-            if index > 0 and index % self.n_cols == 0:
-                s += '\n'
-            s += f'{self.cells[index]:2d}{Board.mark[int(self.marked[index])]}'
-        return s
 
 
 class BoardSet:
     def __init__(self, text_blocks):
-        self.boards = [Board(block) for block in text_blocks]
+        self._boards = [Board(block) for block in text_blocks]
 
     def clear(self):
-        for board in self.boards:
+        for board in self._boards:
             board.clear()
 
     def play_to_win(self, draws):
         self.clear()
         for draw in draws:
-            for board in self.boards:
+            for board in self._boards:
                 board.match(draw)
                 if board.bingo:
                     return board.score
@@ -68,9 +53,9 @@ class BoardSet:
 
     def play_to_loose(self, draws):
         self.clear()
-        remaining_boards = len(self.boards)
+        remaining_boards = len(self._boards)
         for draw in draws:
-            for board in filterfalse(lambda b: b.bingo, self.boards):
+            for board in filterfalse(lambda b: b.bingo, self._boards):
                 board.match(draw)
                 if board.bingo:
                     remaining_boards -= 1
