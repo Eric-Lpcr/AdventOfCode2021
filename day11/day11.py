@@ -1,3 +1,4 @@
+from collections import deque
 from copy import deepcopy
 from itertools import product
 
@@ -23,18 +24,18 @@ class OctopusGrid:
     def _step_once(self):
         previous_flash_count = self.flash_count
         self.steps += 1
-        for i, j in self._all_cells():
+        wanna_flash = deque()
+        for i, j in product(range(self._lines), range(self._cols)):
             self._levels[i][j] += 1
-        for i, j in self._all_cells():
+            if self._levels[i][j] > 9:
+                wanna_flash.append((i, j))
+        for i, j in wanna_flash:
             self._wanna_flash(i, j)
 
         if self._print_steps and (self.steps < 10 or self.steps % 10 == 0):
             print(f'After step {self.steps}:\n{self}\n')
 
         return self.flash_count - previous_flash_count
-
-    def _all_cells(self):
-        return product(range(self._lines), range(self._cols))
 
     def _wanna_flash(self, i, j):
         if self._levels[i][j] > 9:
