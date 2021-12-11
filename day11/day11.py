@@ -6,6 +6,7 @@ class OctopusGrid:
     def __init__(self, levels, print_steps=False):
         self.flash_count = 0
         self.steps = 0
+
         self._levels = deepcopy(levels)
         self._lines, self._cols = len(self._levels), len(self._levels[0])
         self._print_steps = print_steps
@@ -19,11 +20,18 @@ class OctopusGrid:
         while step_flash_count != self._lines * self._cols:
             step_flash_count = self._step_once()
 
-    _neighborhood = set(product([-1, 0, 1], repeat=2)) - {(0, 0)}
+    def _step_once(self):
+        previous_flash_count = self.flash_count
+        self.steps += 1
+        for i, j in self._all_cells():
+            self._levels[i][j] += 1
+        for i, j in self._all_cells():
+            self._wanna_flash(i, j)
 
-    def _neighbors(self, i, j):
-        return ((i + di, j + dj) for di, dj in OctopusGrid._neighborhood
-                if 0 <= i + di < self._lines and 0 <= j + dj < self._cols)
+        if self._print_steps and (self.steps + 1 < 10 or (self.steps + 1) % 10 == 0):
+            print(f'After step {self.steps + 1}:\n{self}\n')
+
+        return self.flash_count - previous_flash_count
 
     def _all_cells(self):
         return product(range(self._lines), range(self._cols))
@@ -39,18 +47,11 @@ class OctopusGrid:
                 if self._levels[ni][nj] == 10:  # proximity triggered flash
                     self._wanna_flash(ni, nj)
 
-    def _step_once(self):
-        previous_flash_count = self.flash_count
-        self.steps += 1
-        for i, j in self._all_cells():
-            self._levels[i][j] += 1
-        for i, j in self._all_cells():
-            self._wanna_flash(i, j)
+    _neighborhood = set(product([-1, 0, 1], repeat=2)) - {(0, 0)}
 
-        if self._print_steps and (self.steps + 1 < 10 or (self.steps + 1) % 10 == 0):
-            print(f'After step {self.steps + 1}:\n{self}\n')
-
-        return self.flash_count - previous_flash_count
+    def _neighbors(self, i, j):
+        return ((i + di, j + dj) for di, dj in OctopusGrid._neighborhood
+                if 0 <= i + di < self._lines and 0 <= j + dj < self._cols)
 
     def __repr__(self):
         return '\n'.join(''.join(str(level) for level in line) for line in self._levels)

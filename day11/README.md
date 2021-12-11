@@ -14,3 +14,6 @@ Part 2 was trivial as I was already counting the flashes during a step, I just n
 I don't use lists comprehensions during the step, the starting matrix evolves step by step. 
 That's the reason why I need a `deepcopy` to reset the octopuses after part 1 (just in case the synchronized
 flash would occur during the 100 part 1 steps).
+
+Having almost all methods taking the same first parameter made me refactor the solution with a class. The code is
+simpler, and this time I paid a special attention to the class interface by making all internals protected.
