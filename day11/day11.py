@@ -28,8 +28,8 @@ class OctopusGrid:
         for i, j in self._all_cells():
             self._wanna_flash(i, j)
 
-        if self._print_steps and (self.steps + 1 < 10 or (self.steps + 1) % 10 == 0):
-            print(f'After step {self.steps + 1}:\n{self}\n')
+        if self._print_steps and (self.steps < 10 or self.steps % 10 == 0):
+            print(f'After step {self.steps}:\n{self}\n')
 
         return self.flash_count - previous_flash_count
 
@@ -57,20 +57,24 @@ class OctopusGrid:
         return '\n'.join(''.join(str(level) for level in line) for line in self._levels)
 
 
-def main(filename):
+def main(filename, testing=False):
     print(f'--------- {filename}')
     with open(filename) as f:
         levels = [[int(c) for c in line] for line in f.read().splitlines()]
 
-    octopuses = OctopusGrid(levels)
+    octopuses = OctopusGrid(levels, testing)
     octopuses.step_times(100)
     print(f'Part 1: number of flashes is {octopuses.flash_count}')
+    if testing:
+        assert(octopuses.flash_count == 1656)
 
     octopuses = OctopusGrid(levels)
     octopuses.find_synchro()
     print(f'Part 2: first synchro is at step {octopuses.steps}')
+    if testing:
+        assert(octopuses.steps == 195)
 
 
 if __name__ == '__main__':
-    main('test.txt')
+    main('test.txt', testing=True)
     main('input.txt')
