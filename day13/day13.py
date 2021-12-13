@@ -1,4 +1,5 @@
 from collections import namedtuple, deque
+from operator import itemgetter
 
 Dot = namedtuple('Dot', ['x', 'y'])
 Folding = namedtuple('Folding', ['axis', 'value'])
@@ -34,10 +35,8 @@ class Paper:
             self.fold_along_y(value)
 
     def __repr__(self):
-        width = height = 0
-        for dot in self.dots:
-            width = max(width, dot.x)
-            height = max(height, dot.y)
+        width = max(map(itemgetter(0), self.dots))
+        height = max(map(itemgetter(1), self.dots))
         s = ''
         for y in range(height + 1):
             for x in range(width + 1):
