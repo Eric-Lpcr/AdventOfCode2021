@@ -58,7 +58,7 @@ class OctopusGrid:
         return '\n'.join(''.join(str(level) for level in line) for line in self._levels)
 
 
-def main(filename, testing=False):
+def main(filename, testing=False, expected1=None, expected2=None):
     print(f'--------- {filename}')
     with open(filename) as f:
         levels = [[int(c) for c in line] for line in f.read().splitlines()]
@@ -67,15 +67,15 @@ def main(filename, testing=False):
     octopuses.step_times(100)
     print(f'Part 1: number of flashes is {octopuses.flash_count}')
     if testing:
-        assert(octopuses.flash_count == 1656)
+        assert(octopuses.flash_count == expected1)
 
     octopuses = OctopusGrid(levels)
     octopuses.find_synchro()
     print(f'Part 2: first synchro is at step {octopuses.steps}')
     if testing:
-        assert(octopuses.steps == 195)
+        assert(octopuses.steps == expected2)
 
 
 if __name__ == '__main__':
-    main('test.txt', testing=True)
+    main('test.txt', True, 1656, 195)
     main('input.txt')
