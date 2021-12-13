@@ -12,11 +12,11 @@ class Graph:
     def find_all_paths(self, from_vertex, to_vertex, accept_vertex_fn, path=[]):
         """ Find all paths in graph,
         accept_vertex_fn takes vertex and path and should return whether vertex can be appended to path"""
-        path = path + [from_vertex]
-        if from_vertex == to_vertex:
-            return [path]
         if from_vertex not in self._graph_dict:
             return []
+        path.append(from_vertex)
+        if from_vertex == to_vertex:
+            return [path]
         paths = []
         for vertex in self._graph_dict[from_vertex]:
             if accept_vertex_fn(vertex, path):
