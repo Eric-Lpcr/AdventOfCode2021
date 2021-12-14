@@ -18,4 +18,4 @@ all these pairs disappear (their kind count becomes 0) and it appears two pairs 
 I store the new pairs in a container not to modify the pair counts which remain to be processed.
 
 That works nice, the test polymer grows from 4 to 3,298,534,883,329 elements in 40 iterations: that's a 3 petabytes 
-string!
+string! The challenge input polymers grows up to 19 PB...
