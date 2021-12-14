@@ -46,14 +46,14 @@ class BigPolymer(BasicPolymer):
     def polymerize(self, reactions):
         new_pairs = defaultdict(int)
         for pair, pair_count in self.pair_counts.items():
-            new_element = reactions.get(pair, None)
+            new_element = reactions.get(pair)
             if new_element is not None:
                 new_pairs[pair[0] + new_element] += pair_count
                 new_pairs[new_element + pair[1]] += pair_count
                 self.element_count[new_element] += pair_count
-                self.pair_counts[pair] = 0
-        for new_pair, pair_count in new_pairs.items():
-            self.pair_counts[new_pair] += pair_count
+            else:
+                new_pairs[pair] = pair_count
+        self.pair_counts = new_pairs
         return self
 
     @property
