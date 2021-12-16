@@ -33,3 +33,5 @@ The weight is set only for the pattern, and I overloaded the cost accessor for a
 pattern with modulo, compute the increase according to the tile coords, and reduce it in the 1 to 9 range.
 
 And here it goes, so efficient. Again a very nice library for graph algorithms, easy to use, easy to specialize.
+
+Graphs make me go to bed so late...
