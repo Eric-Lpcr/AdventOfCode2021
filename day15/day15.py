@@ -32,7 +32,7 @@ class ExpandingGridWithWeights(SquareGrid):
         px = x % self.pattern_width
         py = y % self.pattern_height
         cost_increase = x // self.pattern_width + y // self.pattern_height
-        cost = self.weights[py][px] + cost_increase
+        cost = self.weights[py, px] + cost_increase
         cost = (cost - 1) % 9 + 1
         return cost
 
@@ -57,7 +57,7 @@ def shortest_path(risk_level, expand_grid_factor=1, testing=False):
 def main(filename, testing=False, expected1=None, expected2=None):
     print(f'--------- {filename}')
     with open(filename) as f:
-        risk_level = [[int(c) for c in line] for line in f.read().splitlines()]
+        risk_level = ListOfList([[int(c) for c in line] for line in f.read().splitlines()])
 
     shortest_path_risk = shortest_path(risk_level, testing=testing)
     print(f'Part 1: shortest path risk is {shortest_path_risk}')

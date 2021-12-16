@@ -31,8 +31,12 @@ constructor which takes the risk level grid pattern as a weight, and the repetit
 (it is only used for bounding, and it doesn't generate memory usage). 
 The weight is set only for the pattern, and I overloaded the cost accessor for any coordinate to come back in the
 pattern with modulo, compute the increase according to the tile coordinates, and reduce it in the 1 to 9 range.
-And I finally generalized part 1 to be like a part 2 with a single tile (expand factor is 1).
+
+I finally generalized part 1 to be like a part 2 with a single tile (expand factor is 1).
 
 And here it goes, so efficient. Again a very nice library for graph algorithms, easy to use, easy to specialize.
+
+And last, just to make it useful, I wrapped the list of list risk level grid in my `ListOfList`, just for the pleasure 
+of having a nice Matlab-like indexing `[x, y]` ;-)
 
 Graphs make me go to bed so late...
