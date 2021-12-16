@@ -27,10 +27,11 @@ Ok, easy part 1, not so proud of me but after all, reuse is also part of the job
 Part 2: I was afraid it could be terrible!
 
 But finally, I just needed to subclass the `GridWithWeights` with a 
-constructor which takes the size of the pattern and the repetition factors and computes the real size (it is only used
-for bounding, and it doesn't generate memory usage). 
+constructor which takes the risk level grid pattern as a weight, and the repetition factors. The real size is computed 
+(it is only used for bounding, and it doesn't generate memory usage). 
 The weight is set only for the pattern, and I overloaded the cost accessor for any coordinate to come back in the
-pattern with modulo, compute the increase according to the tile coords, and reduce it in the 1 to 9 range.
+pattern with modulo, compute the increase according to the tile coordinates, and reduce it in the 1 to 9 range.
+And I finally generalized part 1 to be like a part 2 with a single tile (expand factor is 1).
 
 And here it goes, so efficient. Again a very nice library for graph algorithms, easy to use, easy to specialize.
 

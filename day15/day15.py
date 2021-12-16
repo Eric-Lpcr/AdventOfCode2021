@@ -20,29 +20,25 @@ class ListOfList(list):
         return '\n'.join(''.join(f'{v:3d}' for v in line) for line in self)
 
 
-class ExpandingGridWithWeights(GridWithWeights):
-    def __init__(self, pattern_width: int, pattern_height: int, repeat_width=1, repeat_height=1):
-        super().__init__(pattern_width * repeat_width, pattern_height * repeat_height)
-        self.pattern_width = pattern_width
-        self.pattern_height = pattern_height
+class ExpandingGridWithWeights(SquareGrid):
+    def __init__(self, weight_pattern, repeat_width=1, repeat_height=1):
+        self.pattern_width = len(weight_pattern[0])
+        self.pattern_height = len(weight_pattern)
+        super().__init__(self.pattern_width * repeat_width, self.pattern_height * repeat_height)
+        self.weights = weight_pattern
 
     def cost(self, from_node: GridLocation, to_node: GridLocation) -> float:
         x, y = to_node
         px = x % self.pattern_width
         py = y % self.pattern_height
         cost_increase = x // self.pattern_width + y // self.pattern_height
-        cost = self.weights.get((px, py), None) + cost_increase
-        if cost > 9:
-            cost -= 9
+        cost = self.weights[py][px] + cost_increase
+        cost = (cost - 1) % 9 + 1
         return cost
 
 
 def shortest_path(risk_level, expand_grid_factor=1, testing=False):
-    width = len(risk_level[0])
-    height = len(risk_level)
-
-    grid = ExpandingGridWithWeights(width, height, expand_grid_factor, expand_grid_factor)
-    grid.weights = {(i, j): risk_level[j][i] for i in range(width) for j in range(height)}
+    grid = ExpandingGridWithWeights(risk_level, expand_grid_factor, expand_grid_factor)
     start, goal = (0, 0), (grid.width-1, grid.height-1)
 
     came_from, cost_so_far = a_star_search(grid, start, goal)
