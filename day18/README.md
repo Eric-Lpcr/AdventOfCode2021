@@ -15,5 +15,5 @@ Reduction algorithm is made over a pre-order traversal which sorts elements in a
 - easy looking for leftmost exploding pair or literal overvalue, 
 - finding previous/next numbers to increment when a pair explodes.
 
-Made a lot of tests for this challenge, got them appart in [test.py](test.py).
+Made a lot of tests for this challenge, got them apart in [test.py](test.py).
 `
