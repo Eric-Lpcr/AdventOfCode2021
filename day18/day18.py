@@ -36,12 +36,12 @@ class Node:
             stack.extend(self.right.in_order_traversal(level + 1))
         return stack
 
-    def _post_order_traversal(self, level=0):
+    def post_order_traversal(self, level=0):
         stack = list()
         if self.left:
-            stack.extend(self.left._post_order_traversal(level + 1))
+            stack.extend(self.left.post_order_traversal(level + 1))
         if self.right:
-            stack.extend(self.right._post_order_traversal(level + 1))
+            stack.extend(self.right.post_order_traversal(level + 1))
         stack.append((self, level))
         return stack
 
@@ -126,32 +126,31 @@ class SnailFishNumber(Node):
     def _reduce(self):
         while True:
             # Find a pair to explode
-            post_order = self._post_order_traversal()
-            index, to_explode, level = next(((i, sfn, lvl) for i, (sfn, lvl) in enumerate(post_order)
+            post_order = self.post_order_traversal()
+            index, shall_explode, level = next(((i, sfn, lvl) for i, (sfn, lvl) in enumerate(post_order)
                                              if sfn.is_literal_pair and lvl >= SnailFishNumber.max_depth),
                                             (None, None, None))
-            if to_explode is not None:
+            if shall_explode is not None:
                 previous_number = next((sfn for sfn, lvl in reversed(post_order[:index-2]) if sfn.is_literal), None)
                 # index-2 because the two elements before to_explode are its own literals
                 next_number = next((sfn for sfn, lvl in post_order[index + 1:] if sfn.is_literal), None)
-                to_explode._explode(previous_number, next_number)
+                shall_explode.explode_pair(previous_number, next_number)
                 # print(f'After explode: {self}')
                 continue
 
             # Find a literal to split
-            post_order = self._post_order_traversal()
-            to_split = next(
+            shall_split = next(
                 (sfn for sfn, _ in post_order if sfn.is_literal and sfn.value > SnailFishNumber.max_literal_value),
                 None)
-            if to_split is not None:
-                to_split._split()
+            if shall_split is not None:
+                shall_split.split_value()
                 # print(f'After split: {self}')
             else:
                 break
 
         return self
 
-    def _explode(self, previous_number, next_number):
+    def explode_pair(self, previous_number, next_number):
         if not self.is_literal_pair:
             return
         if previous_number:
@@ -161,7 +160,7 @@ class SnailFishNumber(Node):
         self.left = self.right = None
         self.value = 0
 
-    def _split(self):
+    def split_value(self):
         if self.value <= SnailFishNumber.max_literal_value:
             return
         self.left = SnailFishNumber(self.value // 2)
