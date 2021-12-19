@@ -128,10 +128,10 @@ class SnailFishNumber(Node):
             # Find a pair to explode
             post_order = self.post_order_traversal()
             index, shall_explode, level = next(((i, sfn, lvl) for i, (sfn, lvl) in enumerate(post_order)
-                                             if sfn.is_literal_pair and lvl >= SnailFishNumber.max_depth),
-                                            (None, None, None))
+                                                if sfn.is_literal_pair and lvl >= SnailFishNumber.max_depth),
+                                               (None, None, None))
             if shall_explode is not None:
-                previous_number = next((sfn for sfn, lvl in reversed(post_order[:index-2]) if sfn.is_literal), None)
+                previous_number = next((sfn for sfn, lvl in reversed(post_order[:index - 2]) if sfn.is_literal), None)
                 # index-2 because the two elements before to_explode are its own literals
                 next_number = next((sfn for sfn, lvl in post_order[index + 1:] if sfn.is_literal), None)
                 shall_explode.explode_pair(previous_number, next_number)
