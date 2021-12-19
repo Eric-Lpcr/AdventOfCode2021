@@ -1,4 +1,3 @@
-from collections import deque
 from copy import copy
 from itertools import permutations
 from operator import attrgetter
