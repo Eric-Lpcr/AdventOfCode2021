@@ -1,24 +1,7 @@
 from day18 import *
 
 
-class S(SnailFishNumber):
-    def _pre_order_traversal(self, level=0):
-        stack = list()
-        stack.append((self, level))
-        if self.left:
-            stack.extend(self.left._pre_order_traversal(level + 1))
-        if self.right:
-            stack.extend(self.right._pre_order_traversal(level + 1))
-        return stack
-
-    def _in_order_traversal(self, level=0):
-        stack = list()
-        if self.left:
-            stack.extend(self.left._in_order_traversal(level + 1))
-        stack.append((self, level))
-        if self.right:
-            stack.extend(self.right._in_order_traversal(level + 1))
-        return stack
+S = SnailFishNumber  # shortcut
 
 
 def test_reduce():
@@ -35,9 +18,9 @@ def test_addition():
         [[[[0, 7], 4], [[7, 8], [6, 0]]], [8, 1]])
 
     numbers = [S([i, i]) for i in range(1, 7)]
-    assert S.sum(numbers[:4]) == S([[[[1, 1], [2, 2]], [3, 3]], [4, 4]])
-    assert S.sum(numbers[:5]) == S([[[[3, 0], [5, 3]], [4, 4]], [5, 5]])
-    assert S.sum(numbers[:6]) == S([[[[5, 0], [7, 4]], [5, 5]], [6, 6]])
+    assert sum(numbers[:4]) == S([[[[1, 1], [2, 2]], [3, 3]], [4, 4]])
+    assert sum(numbers[:5]) == S([[[[3, 0], [5, 3]], [4, 4]], [5, 5]])
+    assert sum(numbers[:6]) == S([[[[5, 0], [7, 4]], [5, 5]], [6, 6]])
 
     s = S([[[0, [4, 5]], [0, 0]], [[[4, 5], [2, 6]], [9, 5]]]) \
         + S([7, [[[3, 7], [4, 3]], [[6, 3], [8, 8]]]])

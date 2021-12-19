@@ -1,32 +1,12 @@
 from copy import copy
 from itertools import permutations
-from operator import attrgetter
 
 
-class SnailFishNumber:
-    def __init__(self, content=None):
-        """Content may be an int, a list of pairs, a list of two SnailFishNumbers"""
-        if type(content) == list:
-            self.value = None
-            if type(content[0]) == SnailFishNumber:
-                self.left = content[0]
-            else:
-                self.left = SnailFishNumber(content[0])
-            if type(content[1]) == SnailFishNumber:
-                self.right = content[1]
-            else:
-                self.right = SnailFishNumber(content[1])
-        else:
-            self.value = content
-            self.left = None
-            self.right = None
-
-    @property
-    def magnitude(self):
-        if self.is_literal:
-            return self.value
-        else:
-            return 3 * self.left.magnitude + 2 * self.right.magnitude
+class Node:
+    def __init__(self):
+        self.value = None
+        self.left = None
+        self.right = None
 
     @property
     def is_literal(self):
@@ -38,29 +18,118 @@ class SnailFishNumber:
             return False
         return self.left.is_literal and self.right.is_literal
 
-    @classmethod
-    def sum(cls, snail_fish_numbers):
-        return sum(snail_fish_numbers, SnailFishNumber())
+    def pre_order_traversal(self, level=0):
+        stack = list()
+        stack.append((self, level))
+        if self.left:
+            stack.extend(self.left.pre_order_traversal(level + 1))
+        if self.right:
+            stack.extend(self.right.pre_order_traversal(level + 1))
+        return stack
+
+    def in_order_traversal(self, level=0):
+        stack = list()
+        if self.left:
+            stack.extend(self.left.in_order_traversal(level + 1))
+        stack.append((self, level))
+        if self.right:
+            stack.extend(self.right.in_order_traversal(level + 1))
+        return stack
+
+    def _post_order_traversal(self, level=0):
+        stack = list()
+        if self.left:
+            stack.extend(self.left._post_order_traversal(level + 1))
+        if self.right:
+            stack.extend(self.right._post_order_traversal(level + 1))
+        stack.append((self, level))
+        return stack
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        return self.value == other.value and self.left == other.left and self.right == other.right
+
+    def __str__(self):
+        if self.value is not None:
+            return str(self.value)
+        else:
+            return f'[{str(self.left)},{str(self.right)}]'
+
+    def __repr__(self):
+        return str(self)
+
+
+class SnailFishNumber(Node):
+    def __init__(self, content=None):
+        """Argument must be an int, a string, a SnailFishNumber, or a list/tuple of two any of these"""
+        super().__init__()
+
+        if type(content) is str:
+            content = eval(content)
+
+        type_error = False
+
+        if type(content) is int or content is None:
+            self.value = content
+            self.left = None
+            self.right = None
+        elif isinstance(content, SnailFishNumber) or issubclass(type(content), SnailFishNumber):
+            self.value = content.value
+            self.left = copy(content.left)
+            self.right = copy(content.right)
+        elif type(content) is list or type(content) is tuple:
+            if len(content) != 2:
+                type_error = True
+            self.value = None
+            self.left = SnailFishNumber(content[0])
+            self.right = SnailFishNumber(content[1])
+        else:
+            type_error = True
+
+        if type_error:
+            raise TypeError(
+                'SnailFishNumber() argument must be an int, a string, '
+                + 'a SnailFishNumber, or a list/tuple of two any of these')
+
+    @property
+    def magnitude(self):
+        if self.is_literal:
+            return self.value
+        else:
+            return 3 * self.left.magnitude + 2 * self.right.magnitude
 
     # Neutral element for addition
-    ZERO = None  # To be replaced by SnailFishNumber() after class definition
+    NONE = None  # To be replaced by SnailFishNumber() after class definition
 
     def __add__(self, other):
-        if self == SnailFishNumber.ZERO:
-            return copy(other)
-        s = SnailFishNumber([copy(self), copy(other)])
+        if self == SnailFishNumber.NONE:
+            return other
+        if other == SnailFishNumber.NONE:
+            return self
+        s = SnailFishNumber([self, other])
         # print(f'After addition: {s}')
         return s._reduce()
 
-    def _reduce(self):
-        explosion_level = 4
-        split_level = 9
+    def __radd__(self, other):
+        if type(other) == int and other == 0:  # to manage sum() default initial value int(0)
+            return copy(self)
+        else:
+            return other.__add__(self)
 
+    def __gt__(self, other):
+        return self.magnitude > other.magnitude
+
+    max_depth = 4
+    max_literal_value = 9
+
+    def _reduce(self):
         while True:
             # Find a pair to explode
             post_order = self._post_order_traversal()
             index, to_explode, level = next(((i, sfn, lvl) for i, (sfn, lvl) in enumerate(post_order)
-                                             if sfn.is_literal_pair and lvl >= explosion_level), (None, None, None))
+                                             if sfn.is_literal_pair and lvl >= SnailFishNumber.max_depth),
+                                            (None, None, None))
             if to_explode is not None:
                 previous_number = next((sfn for sfn, lvl in reversed(post_order[:index-2]) if sfn.is_literal), None)
                 # index-2 because the two elements before to_explode are its own literals
@@ -71,7 +140,9 @@ class SnailFishNumber:
 
             # Find a literal to split
             post_order = self._post_order_traversal()
-            to_split = next((sfn for sfn, _ in post_order if sfn.is_literal and sfn.value > split_level), None)
+            to_split = next(
+                (sfn for sfn, _ in post_order if sfn.is_literal and sfn.value > SnailFishNumber.max_literal_value),
+                None)
             if to_split is not None:
                 to_split._split()
                 # print(f'After split: {self}')
@@ -91,25 +162,11 @@ class SnailFishNumber:
         self.value = 0
 
     def _split(self):
-        if self.value <= 9:
+        if self.value <= SnailFishNumber.max_literal_value:
             return
         self.left = SnailFishNumber(self.value // 2)
         self.right = SnailFishNumber((self.value + 1) // 2)
         self.value = None
-
-    def _post_order_traversal(self, level=0):
-        stack = list()
-        if self.left:
-            stack.extend(self.left._post_order_traversal(level + 1))
-        if self.right:
-            stack.extend(self.right._post_order_traversal(level + 1))
-        stack.append((self, level))
-        return stack
-
-    def __eq__(self, other):
-        if other is None:
-            return False
-        return self.value == other.value and self.left == other.left and self.right == other.right
 
     def __copy__(self):
         if self.is_literal:
@@ -117,33 +174,22 @@ class SnailFishNumber:
         else:
             return SnailFishNumber([copy(self.left), copy(self.right)])
 
-    def __str__(self):
-        if self.value is not None:
-            return str(self.value)
-        else:
-            return f'[{str(self.left)},{str(self.right)}]'
 
-    def __repr__(self):
-        return str(self)
-
-
-SnailFishNumber.ZERO = SnailFishNumber()
+SnailFishNumber.NONE = SnailFishNumber()
 
 
 def main(filename, testing=False, expected1=None, expected2=None):
     print(f'--------- {filename}')
     with open(filename) as f:
-        numbers = [SnailFishNumber(eval(line)) for line in f.readlines()]
+        numbers = [SnailFishNumber(line) for line in f.readlines()]
 
-    s = SnailFishNumber.sum(numbers)
+    s = sum(numbers)
     print(f'Part 1: sum magnitude is {s.magnitude} (sum is {s})')
     if testing:
         assert s.magnitude == expected1
 
-    sums = [a + b for a, b in permutations(numbers, 2)]
-    max_sum = next(iter(reversed(sorted(sums, key=attrgetter('magnitude')))))
-
-    print(f'Part 2: max magnitude of a sum is {max_sum.magnitude}')
+    max_sum = max(a + b for a, b in permutations(numbers, 2))
+    print(f'Part 2: max magnitude of a pair sum is {max_sum.magnitude}')
     if testing:
         assert max_sum.magnitude == expected2
 
