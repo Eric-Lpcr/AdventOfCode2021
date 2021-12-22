@@ -55,7 +55,7 @@ def dirac_play(players, win_score=21, spaces=10, dice_faces=(1, 2, 3), dice_roll
     positions = [p.position - 1 for p in players]  # position in [0-9] for modulo
     scores = [p.score for p in players]
 
-    @cache
+    @cache  # warning do not modify parameters in function otherwise cache is corrupted...
     def play_all_universes(position1, position2, score1, score2, turn):
         wins = int(score1 >= win_score), int(score2 >= win_score)  # 0 or 1 for each
         if any(wins):
@@ -65,11 +65,11 @@ def dirac_play(players, win_score=21, spaces=10, dice_faces=(1, 2, 3), dice_roll
         for roll, universes in rolls.items():  # explore all universes
             if turn == 1:
                 p1, p2 = (position1 + roll) % spaces, position2
-                s1, s2 = score1 + p1 + 1, score2
-                next_turn = 2
+                s1, s2 = score1 + (p1 + 1), score2
+                next_turn = 2  # can't reuse 'turn' here, won't cache correctly
             else:
                 p1, p2 = position1, (position2 + roll) % spaces
-                s1, s2 = score1, score2 + p2 + 1
+                s1, s2 = score1, score2 + (p2 + 1)
                 next_turn = 1
 
             w1, w2 = play_all_universes(p1, p2, s1, s2, next_turn)  # recursive_call call
